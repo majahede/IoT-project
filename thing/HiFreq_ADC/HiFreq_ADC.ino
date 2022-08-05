@@ -30,13 +30,15 @@ Point sensor("wifi_status");
 
 DHTesp dht;
  
-float currentTemp;
-float currentHumidity;
+float temperature;
+float humidity;
+float heatIndex;
 
 void displayReadingsOnOled() {
    
-  String temperatureDisplay ="Temperature: " + (String)currentTemp +  "°C";
-  String humidityDisplay = "Humidity: " + (String)currentHumidity + "%";
+  String temperatureDisplay ="Temperature: " + (String)temperature +  "°C";
+  String humidityDisplay = "Humidity: " + (String)humidity + "%";
+  String heatIndexDisplay = "Heat index: " + (String)heatIndex + "°C";
  
   // Clear the OLED screen
   Heltec.display->clear();
@@ -44,6 +46,8 @@ void displayReadingsOnOled() {
   Heltec.display->drawString(0, 0, temperatureDisplay);
   // Prepare to display humidity
   Heltec.display->drawString(0, 12, humidityDisplay);
+  // Prepare to display heat index
+  Heltec.display->drawString(0, 24, heatIndexDisplay);
   // Display the readings
   Heltec.display->display();
 }
@@ -79,45 +83,42 @@ void setup()
   }
   
   dht.setup(12, DHTesp::DHT11);
-   
-  currentTemp = dht.getTemperature();
-  currentHumidity = dht.getHumidity();
- 
+
   pinMode(LED,OUTPUT);
   digitalWrite(LED,HIGH);
  
   Heltec.begin(true /*DisplayEnable Enable*/, false /*LoRa Enable*/, false /*Serial Enable*/);
-  displayReadingsOnOled();
 }
  
 void loop()
 {
-  float temperature = dht.getTemperature();
-  float humidity = dht.getHumidity();
- 
-  if (temperature != currentTemp || humidity != currentHumidity) {
-    currentTemp = temperature;
-    currentHumidity = humidity;
-    displayReadingsOnOled();
-  }
-   // Store measured value into point
   sensor.clearFields();
-  // Report RSSI of currently connected network
-  sensor.addField("rssi", WiFi.RSSI());
+  
+  temperature = dht.getTemperature();
+  humidity = dht.getHumidity();
+  heatIndex = dht.computeHeatIndex(temperature, humidity, false);
+  displayReadingsOnOled();
+
+  sensor.addField("humidity", humidity);
+  sensor.addField("temperature", temperature);
+  sensor.addField("heat_index", heatIndex);
+   
   // Print what are we exactly writing
   Serial.print("Writing: ");
   Serial.println(client.pointToLineProtocol(sensor));
+  
   // If no Wifi signal, try to reconnect it
   if (wifiMulti.run() != WL_CONNECTED) {
     Serial.println("Wifi connection lost");
   }
+  
   // Write point
   if (!client.writePoint(sensor)) {
     Serial.print("InfluxDB write failed: ");
     Serial.println(client.getLastErrorMessage());
   }
 
-  //Wait 10s
+  Serial.println(temperature);
   Serial.println("Wait 10s");
   delay(10000);
 }
