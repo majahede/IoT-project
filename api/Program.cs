@@ -11,7 +11,7 @@ var configurationBuilder = builder.Configuration.SetBasePath(AppDomain.CurrentDo
 
 var services = builder.Services;
 
-var settingsSection = configurationBuilder.GetSection("InfluxDb");
+var settingsSection = configurationBuilder.GetSection("InfluxDbSettings");
 
 services.Configure<InfluxDbSettings>(settingsSection);
 
