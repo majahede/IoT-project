@@ -16,8 +16,9 @@ public class SensorController : ControllerBase
     }
 
     [HttpGet]
-    public async Task GetAll()
+    public async Task<IActionResult> GetAll()
     {    
-        await _sensorDataService.GetAsync();
+       // await _sensorDataService.GetAsync();
+       return Ok("Welcome to sensor controller");
     } 
 }

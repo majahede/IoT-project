@@ -1,8 +1,16 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { getAllSensorData } from './api/sensorApiCalls';
 
 function App() {
+
+  const formatDateHandler = async () => {
+    var a = await getAllSensorData();
+    console.log(a)
+  };
+  formatDateHandler();
+  
   return (
     <div className="App">
       <header className="App-header">

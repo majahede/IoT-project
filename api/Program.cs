@@ -23,6 +23,9 @@ services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+const string allowedSpecificOrigins = "_AllowedSpecificOrigins";
+services.AddCors(options => options.AddPolicy(allowedSpecificOrigins, builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -32,6 +35,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(allowedSpecificOrigins);
 app.UseHttpsRedirection();
 app.UseRouting();
 
