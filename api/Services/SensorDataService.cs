@@ -16,19 +16,18 @@ public class SensorDataService
         _bucket = settings.Value.Bucket;
         _org = settings.Value.Org;
     }
-    public async Task GetAsync()
+    public async Task GetSensorDataAsync(string fieldName)
     {
-        Console.WriteLine(_org);
         var query = _client.GetQueryApi();
-        var flux = $"from(bucket:\"{_bucket}\") |> range(start: 0)";
+        
+        var flux = $"from(bucket:\"{_bucket}\") |> range(start: 0) |> filter(fn: (r) => r[\"_field\"] == \"{fieldName}\")";
+        
         var tables = await query.QueryAsync(flux, _org);
         
-        foreach (var t in tables)
+        foreach (var r in tables.SelectMany(t => t.Records))
         {
-            foreach (var r in t.Records)
-            {
-                Console.WriteLine(r.GetField);
-            }
+            Console.WriteLine(r.GetValue().ToString());
+            Console.WriteLine(r.GetTime().ToString());
         }
     }
 }

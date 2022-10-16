@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 
 public class SensorController : ControllerBase
 {
@@ -16,9 +16,8 @@ public class SensorController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task GetAll()
     {    
-       // await _sensorDataService.GetAsync();
-       return Ok("Welcome to sensor controller");
-    } 
+       await _sensorDataService.GetAsync("heat_index");
+    }
 }
