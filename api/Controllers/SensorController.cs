@@ -18,6 +18,6 @@ public class SensorController : ControllerBase
     [HttpGet]
     public async Task GetAll()
     {    
-       await _sensorDataService.GetAsync("heat_index");
+       await _sensorDataService.GetSensorDataAsync("heat_index");
     }
 }
