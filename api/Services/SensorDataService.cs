@@ -21,7 +21,11 @@ public class SensorDataService
     {
         var query = _client.GetQueryApi();
         
-        var flux =$" from(bucket: \"{_bucket}\") |> range(start: -1h, stop: now()) |> filter(fn: (r) => r[\"_field\"] ==  \"{fieldName}\")|> aggregateWindow(every: 10m, fn: mean, createEmpty: false)|> yield(name: \"mean\")";
+        var flux =$"from(bucket: \"{_bucket}\") " +
+                  "|> range(start: -1h, stop: now()) " +
+                  $"|> filter(fn: (r) => r[\"_field\"] ==  \"{fieldName}\")" +
+                  "|> aggregateWindow(every: 10m, fn: mean, createEmpty: false)" +
+                  "|> yield(name: \"mean\")";
         
         var tables = await query.QueryAsync(flux, _org);
 
