@@ -20,14 +20,18 @@ public class SensorDataService
     {
         var query = _client.GetQueryApi();
         
-        var flux = $"from(bucket:\"{_bucket}\") |> range(start: 0) |> filter(fn: (r) => r[\"_field\"] == \"{fieldName}\")";
+     //   var flux = $"from(bucket:\"{_bucket}\") |> range(start: 0) |> filter(fn: (r) => r[\"_field\"] == \"{fieldName}\")";
+
+    // var flux =$"from(bucket: \"{_bucket}\") |> range(start: 2022-10-24T11:24:00Z)|> aggregateWindow(every:  1h, fn: mean)|> filter(fn: (r) => r[\"_field\"] == \"{fieldName}\")";
         
-        var tables = await query.QueryAsync(flux, _org);
-        
+    var flux =$" from(bucket: \"{_bucket}\") |> range(start: -1h, stop: now()) |> filter(fn: (r) => r[\"_field\"] == \"temperature\")|> aggregateWindow(every: 10m, fn: mean, createEmpty: false)|> yield(name: \"mean\")";
+    
+    var tables = await query.QueryAsync(flux, _org);
+    
         foreach (var r in tables.SelectMany(t => t.Records))
         {
-            Console.WriteLine(r.GetValue().ToString());
-            Console.WriteLine(r.GetTime().ToString());
+            Console.WriteLine(r.GetValue());
+            Console.WriteLine(r.GetTime());
         }
     }
 }
