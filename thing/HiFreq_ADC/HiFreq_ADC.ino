@@ -119,6 +119,6 @@ void loop()
   }
 
   Serial.println(temperature);
-  Serial.println("Wait 60s");
-  delay(1000);
+  Serial.println("Wait 10s");
+  delay(10000);
 }
