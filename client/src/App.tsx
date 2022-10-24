@@ -1,34 +1,85 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import { getAllSensorData } from './api/sensorApiCalls';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
+import faker from 'faker';
 
-function App() {
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+);
 
-  const formatDateHandler = async () => {
-    var a = await getAllSensorData();
-    console.log(a)
-  };
-  formatDateHandler();
-  
+export const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'top' as const,
+    },
+    title: {
+      display: true,
+      text: 'Temperature',
+    },
+  },
+};
+
+export const options2 = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'top' as const,
+    },
+    title: {
+      display: true,
+      text: 'Humidity',
+    },
+  },
+};
+
+const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+
+export const data = {
+  labels,
+  datasets: [
+    {
+      label: 'Dataset 1',
+      data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
+      borderColor: 'rgb(255, 99, 132)',
+      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+    }
+  ],
+};
+
+export const data2 = {
+  labels,
+  datasets: [
+    {
+      label: 'Dataset 2',
+      data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
+      borderColor: 'rgb(53, 162, 235)',
+      backgroundColor: 'rgba(53, 162, 235, 0.5)',
+    },
+  ],
+};
+
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  <>
+    <Line options={options} data={data} />
+    <Line options={options} data={data2} />
+  </>)
+ 
+  ;
 }
-
-export default App;
