@@ -14,14 +14,13 @@ ESP8266WiFiMulti wifiMulti;
 #include <InfluxDbClient.h>
 #include <InfluxDbCloud.h>
 
-#define WIFI_SSID "TP-Link_E20A"
-#define WIFI_PASSWORD "igorirma"
+#define WIFI_SSID "ssid"
+#define WIFI_PASSWORD "password"
 
-#define INFLUXDB_URL "https://europe-west1-1.gcp.cloud2.influxdata.com"
-#define INFLUXDB_TOKEN "7puxjExEBGMIVZn_rq-BKqmisQq0YEb0Vi49vdYLDX3Cf2V0X8SqBdzQp6Y9rc8zv1Imuw-eh7KKVcaAhkzORg=="
-#define INFLUXDB_ORG "majahedegard@gmail.com"
-#define INFLUXDB_BUCKET "ESP32"
-
+#define INFLUXDB_URL "url"
+#define INFLUXDB_TOKEN "token"
+#define INFLUXDB_ORG "org"
+#define INFLUXDB_BUCKET "bucket"
 #define TZ_INFO "CET-1CEST,M3.5.0,M10.5.0/3"
 
 InfluxDBClient client(INFLUXDB_URL, INFLUXDB_ORG, INFLUXDB_BUCKET, INFLUXDB_TOKEN, InfluxDbCloud2CACert);
