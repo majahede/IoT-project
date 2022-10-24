@@ -1,6 +1,6 @@
 import axios , { Method } from "axios";
 
-const baseUrl = `${process.env.REACT_APP_API_BASEURL}`;
+const baseUrl = `${process.env.REACT_APP_API_BASEURL}/api`;
 
 export const fetchHttp = async <TResponse, TPayload>(
   url: string,

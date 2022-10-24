@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,6 +11,9 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import faker from 'faker';
+import {getHumidityValues, getTemperatureValues} from "./api/sensorApiCalls";
+import {UsePostStarshipService} from "./sensor-data-screen/SensorDataScreen";
+import {SensorData} from "./api/api-interfaces.ts/sensorData";
 
 ChartJS.register(
     CategoryScale,
@@ -48,37 +51,53 @@ export const options2 = {
   },
 };
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-
-export const data = {
-  labels,
-  datasets: [
-    {
-      label: 'Dataset 1',
-      data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
-      borderColor: 'rgb(255, 99, 132)',
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
-    }
-  ],
-};
-
-export const data2 = {
-  labels,
-  datasets: [
-    {
-      label: 'Dataset 2',
-      data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
-      borderColor: 'rgb(53, 162, 235)',
-      backgroundColor: 'rgba(53, 162, 235, 0.5)',
-    },
-  ],
-};
-
 export default function App() {
+  const [temperature, setTemperature] = useState<SensorData[]>([]);
+  const [humidity, setHumidity] = useState<SensorData[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const humidityData = await getHumidityValues();
+      const temperatureData = await getTemperatureValues();
+      
+      setHumidity(humidityData);
+      setTemperature(temperatureData);
+    }
+    fetchData().catch(console.error);
+  }, []);
+
+  const temperatureValues = temperature.map(x => x.value);
+  const humidityValues = humidity.map(x => x.value);
+  const labels = temperature.map(x => x.time);
+  
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: 'Temperature',
+        data: temperatureValues,
+        borderColor: 'rgb(255, 99, 132)',
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      }
+    ],
+  };
+
+  const data2 = {
+    labels,
+    datasets: [
+      {
+        label: 'humidity',
+        data: humidityValues,
+        borderColor: 'rgb(53, 162, 235)',
+        backgroundColor: 'rgba(53, 162, 235, 0.5)',
+      },
+    ],
+  };
   return (
   <>
     <Line options={options} data={data} />
-    <Line options={options} data={data2} />
+    <Line options={options2}  data={data2} />
+    <UsePostStarshipService/>
   </>)
  
   ;
