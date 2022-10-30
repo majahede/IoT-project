@@ -1,4 +1,3 @@
-using System.Globalization;
 using api.Models;
 using InfluxDB.Client;
 using Microsoft.Extensions.Options;
@@ -22,9 +21,9 @@ public class SensorDataService
         var query = _client.GetQueryApi();
         
         var flux =$"from(bucket: \"{_bucket}\") " +
-                  "|> range(start: -5d, stop: now()) " +
+                  "|> range(start: -7d, stop: now()) " +
                   $"|> filter(fn: (r) => r[\"_field\"] ==  \"{fieldName}\")" +
-                  "|> aggregateWindow(every: 2h, fn: mean, createEmpty: false)" +
+                  "|> aggregateWindow(every: 24h, fn: mean, createEmpty: false)" +
                   "|> yield(name: \"mean\")";
         
         var tables = await query.QueryAsync(flux, _org);
@@ -34,7 +33,7 @@ public class SensorDataService
             let time = (DateTime) r.GetTimeInDateTime() 
             select new SensorDataModel
             {
-                Time = time.AddHours(2).ToString(CultureInfo.InvariantCulture), 
+                Time = time.AddHours(2).ToShortDateString(),
                 Value = (double) r.GetValue()
             }).ToList();
     }
