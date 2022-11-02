@@ -33,7 +33,7 @@ public class SensorDataService
             let time = (DateTime) r.GetTimeInDateTime() 
             select new SensorDataModel
             {
-                Time = time.AddHours(2).ToShortDateString(),
+                Time = time.ToShortDateString(),
                 Value = (double) r.GetValue()
             }).ToList();
     }
