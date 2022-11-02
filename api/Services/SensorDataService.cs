@@ -1,3 +1,4 @@
+using System.Globalization;
 using api.Models;
 using InfluxDB.Client;
 using Microsoft.Extensions.Options;
@@ -36,5 +37,26 @@ public class SensorDataService
                 Time = time.ToShortDateString(),
                 Value = (double) r.GetValue()
             }).ToList();
+    }
+
+    public async Task<SensorDataModel> GetCurrentSensorDataAsync(string fieldName)
+    {
+        var query = _client.GetQueryApi();
+
+        var flux = $"from(bucket: \"{_bucket}\") " +
+                   "|> range(start: -1d) " +
+                   $"|> filter(fn: (r) => r[\"_field\"] ==  \"{fieldName}\")" +
+                   "|> last()";
+
+        var tables = await query.QueryAsync(flux, _org);
+        
+        return (
+            from r in tables.SelectMany(t => t.Records) 
+            let time = (DateTime) r.GetTimeInDateTime() 
+            select new SensorDataModel
+            {
+                Time = time.AddHours(1).ToString(CultureInfo.InvariantCulture),
+                Value = (double) r.GetValue()
+            }).Last();
     }
 }
