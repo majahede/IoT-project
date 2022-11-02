@@ -8,3 +8,7 @@ export const getHumidityValues = async (): Promise<SensorData[]> => {
 export const getTemperatureValues = async (): Promise<SensorData[]> => {
   return await fetchHttp("Sensor/temperature", "GET");
 };
+
+export const getHeatIndexValues = async (): Promise<SensorData[]> => {
+  return await fetchHttp("Sensor/heat-index", "GET");
+};

@@ -10,7 +10,7 @@ import {
     Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import {getHumidityValues, getTemperatureValues} from "../api/sensorApiCalls";
+import {getHeatIndexValues, getHumidityValues, getTemperatureValues} from "../api/sensorApiCalls";
 import {SensorData} from "../api/api-interfaces.ts/sensorData";
 
 ChartJS.register(
@@ -39,20 +39,24 @@ const options = {
 export default function SensorDataScreen() {
     const [temperature, setTemperature] = useState<SensorData[]>([]);
     const [humidity, setHumidity] = useState<SensorData[]>([]);
+    const [heatIndex, setHeatIndex] = useState<SensorData[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
             const humidityData = await getHumidityValues();
             const temperatureData = await getTemperatureValues();
+            const heatIndexData = await getHeatIndexValues();
 
             setHumidity(humidityData);
             setTemperature(temperatureData);
+            setHeatIndex(heatIndexData);
         }
         fetchData().catch(console.error);
     }, []);
 
     const temperatureValues = temperature.map(x => x.value);
     const humidityValues = humidity.map(x => x.value);
+    const heatIndexValues = heatIndex.map(x => x.value);
     const labels = temperature.map(x => x.time);
 
     const temperatureData = {
@@ -78,10 +82,28 @@ export default function SensorDataScreen() {
             },
         ],
     };
+
+    const heatIndexData = {
+        labels,
+        datasets: [
+            {
+                label: 'heatIndex',
+                data: humidityValues,
+                borderColor: 'rgb(255,140,0)',
+                backgroundColor: 'rgb(255,165,0)',
+            },
+        ],
+    };
+    
     return (
         <>
-            <Line options={options} data={temperatureData} />
-            <Line options={options}  data={humidityData} />
+            <div style={{display: "flex", justifyContent: "space-between", marginLeft: 50}}>
+                <div style={{width: 800, display: "flex", padding: 20}}>
+                    <Line style={{ margin: 20}} options={options} data={temperatureData}/>
+                    <Line style={{ margin: 20}} options={options}  data={humidityData}/>
+                    <Line style={{ margin: 20}} options={options}  data={heatIndexData}/>
+                </div>
+            </div>
         </>)
         ;
 }

@@ -30,4 +30,11 @@ public class SensorController : ControllerBase
     {    
         return await _sensorDataService.GetSensorDataAsync("humidity");
     }
+    
+    [HttpGet]
+    [Route("heat-index")]
+    public async Task<List<SensorDataModel>> GetHeatIndexValues()
+    {    
+        return await _sensorDataService.GetSensorDataAsync("heat_index");
+    }
 }
