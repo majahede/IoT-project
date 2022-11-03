@@ -40,15 +40,10 @@ void displayReadingsOnOled() {
   String humidityDisplay = "Humidity: " + (String)humidity + "%";
   String heatIndexDisplay = "Heat index: " + (String)heatIndex + "°C";
  
-  // Clear the OLED screen
   Heltec.display->clear();
-  // Prepare to display temperature
   Heltec.display->drawString(0, 0, temperatureDisplay);
-  // Prepare to display humidity
   Heltec.display->drawString(0, 12, humidityDisplay);
-  // Prepare to display heat index
   Heltec.display->drawString(0, 24, heatIndexDisplay);
-  // Display the readings
   Heltec.display->display();
 }
     
@@ -56,18 +51,18 @@ void setup()
 {
   Serial.begin(115200);
   
-  // Setup wifi
   WiFi.mode(WIFI_STA);
   wifiMulti.addAP(WIFI_SSID, WIFI_PASSWORD);
 
   Serial.print("Connecting to wifi");
+ 
   while (wifiMulti.run() != WL_CONNECTED) {
     Serial.print(".");
     delay(500);
   }
+ 
   Serial.println();
 
-  // Add tags
   sensor.addTag("device", DEVICE);
   sensor.addTag("SSID", WiFi.SSID());
 
@@ -103,16 +98,13 @@ void loop()
   sensor.addField("temperature", temperature);
   sensor.addField("heat_index", heatIndex);
    
-  // Print what are we exactly writing
   Serial.print("Writing: ");
   Serial.println(client.pointToLineProtocol(sensor));
   
-  // If no Wifi signal, try to reconnect it
   if (wifiMulti.run() != WL_CONNECTED) {
     Serial.println("Wifi connection lost");
   }
   
-  // Write point
   if (!client.writePoint(sensor)) {
     Serial.print("InfluxDB write failed: ");
     Serial.println(client.getLastErrorMessage());
