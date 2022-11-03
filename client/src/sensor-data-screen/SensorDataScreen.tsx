@@ -108,23 +108,18 @@ export default function SensorDataScreen() {
     
     return (
         <>
-            <div style={{display: "flex", justifyContent: "space-between", marginLeft: 70}}>
-                <div style={{color: "rgb(255, 99, 132)", width: 800, display: "flex", padding: 20}}>
-                    <h1>Current temperature = {currentTemperature?.value} °C</h1>
-                </div>
-                <div style={{color: "rgb(255,140,0)", width: 800, display: "flex", padding: 20}}>
-                    <h1>Current heat index = {currentHeatIndex?.value} °C</h1>
-                </div>
-                <div style={{color: "rgb(53, 162, 235)", width: 800, display: "flex", padding: 20}}>
-                    <h1>Current humidity = {currentHumidity?.value} %</h1>
+            <div style={{display: "flex", justifyContent: "start"}}>
+                <h1 style={{color: "rgb(255, 99, 132)", display: "flex", padding: 20}}>Current temperature = {currentTemperature?.value} °C</h1>
+                <h1 style={{color: "rgb(255,140,0)", display: "flex", padding: 20}}>Current heat index = {currentHeatIndex?.value} °C</h1>
+                <h1 style={{color: "rgb(53, 162, 235)", display: "flex", padding: 20}}>Current humidity = {currentHumidity?.value} %</h1>
+            </div>
+            <div style={{display: "flex", justifyContent: "space-between", alignItems:'center'}}>
+                <div style={{ width: 800, display: "flex", padding: 20}}>
+                    <Line style={{ padding: 20}} options={options} data={temperatureData}/>
+                    <Line style={{ padding: 20}} options={options}  data={humidityData}/>
                 </div>
             </div>
-            <div style={{display: "flex", justifyContent: "space-between", marginLeft: 50}}>
-                <div style={{width: 800, display: "flex", padding: 20}}>
-                    <Line style={{ margin: 20}} options={options} data={temperatureData}/>
-                    <Line style={{ margin: 20}} options={options}  data={humidityData}/>
-                </div>
-            </div>
+            
         </>)
         ;
 }
